@@ -28,28 +28,43 @@ import java.util.logging.Logger;
 
 public class BigItemStack {
 
+    private final int maxStackSize = 2048;
+
     public static final BigItemStack EMPTY = new BigItemStack(ItemStack.EMPTY);
     private ItemStack item;
     private int stackSize;
-    private final int maxStackSize = 2048;
 
     public BigItemStack (ItemStack item, int amount){
         this.item = item;
-        this.item.setCount(1);
-        this.stackSize = amount;
-        AELog.info("Created BigItemStack: " + item + " with count: " + stackSize);
+        writeStackSizeNBT(amount);
+        // this.item.setCount(1);
     }
 
     public BigItemStack(ItemStack item){
-        this(item, item.getTagCompound().getInteger("BigCount"));
+        this.item = item;
+        writeStackSizeNBT(item.getCount());
+        // this.item.setCount(1);
     }
 
     public ItemStack[] convertToStacks(){
-        List<ItemStack> itemStackList = new ArrayList<>();
-        int remainder = stackSize % item.getMaxStackSize();
-        ItemStack modifiableStack = item.copy();
+        // List<ItemStack> itemStackList = new ArrayList<>();
+        ItemStack[] itemStacks = new ItemStack[getTotalItemStacks()];
+        ItemStack itemStack = this.item.copy();
 
+        int stackSize = itemStack.getTagCompound().getInteger("BigCount");
+        itemStack.setCount(itemStack.getMaxStackSize());
 
+        for (int i = 0; i < itemStacks.length; i++) {
+            if (stackSize > itemStack.getMaxStackSize()){
+                itemStacks[i] = itemStack;
+                stackSize -= itemStack.getMaxStackSize();
+            } else {
+                itemStack.setCount(stackSize);
+                itemStacks[i] = itemStack;
+            }
+        }
+        return itemStacks;
+        /*
         if (stackSize > item.getMaxStackSize()) {
             ItemStack split;
             // item.setCount(item.getMaxStackSize());
@@ -66,11 +81,13 @@ public class BigItemStack {
             itemStackList.add(modifiableStack.copy());
         }
         return itemStackList.toArray(new ItemStack[0]);
+         */
     }
+
     public ItemStack getItemStack(){
-        item.getTagCompound().setInteger("BigCount", stackSize);
         return item;
     }
+
     public int getTotalItemStacks(){
         return (int) Math.ceil((double) stackSize / item.getMaxStackSize());
     }
@@ -78,13 +95,18 @@ public class BigItemStack {
     public int getMaxStackSize(){
         return maxStackSize;
     }
+
     public int getCount(){
+        readStackSizeNBT();
         return stackSize;
     }
+
     public void setCount(int amount){
-        this.stackSize = amount;
+        // this.stackSize = amount;
+        writeStackSizeNBT(amount);
     }
     public boolean isEmpty(){
+        readStackSizeNBT();
         if (stackSize > 0)
             return false;
 
@@ -93,6 +115,25 @@ public class BigItemStack {
 
     public void writeToNBT(NBTTagCompound tag) {
         item.writeToNBT(tag);
-        tag.setInteger("BigCount", stackSize);
+    }
+
+    private void writeStackSizeNBT(int amount){
+        if (!item.hasTagCompound())
+            item.setTagCompound(new NBTTagCompound());
+
+        item.getTagCompound().setInteger("BigCount", amount);
+    }
+
+    private void writeStackSizeNBT(){
+        writeStackSizeNBT(this.stackSize);
+    }
+
+    private void readStackSizeNBT (){
+        if (this.item.getTagCompound() == null){
+            NBTTagCompound tag = new NBTTagCompound();
+            tag.setInteger("BigCount", this.item.getCount());
+        }
+
+        this.stackSize = item.getTagCompound().getInteger("BigCount");
     }
 }

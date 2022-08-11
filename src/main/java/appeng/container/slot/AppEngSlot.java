@@ -48,6 +48,7 @@ public class AppEngSlot extends Slot
 	private final int defY;
 	private boolean isDraggable = true;
 	private boolean isPlayerSide = false;
+	private BigItemStack bigItemStack;
 	private AEBaseContainer myContainer = null;
 	private int IIcon = -1;
 	private hasCalculatedValidness isValid;
@@ -136,7 +137,11 @@ public class AppEngSlot extends Slot
 			// return this.getDisplayStack();
 		}
 		ItemStack is = this.itemHandler.getStackInSlot(this.index);
-		return new BigItemStack(is, is.getTagCompound().getInteger("BigCount"));
+
+		if (bigItemStack == null)
+			bigItemStack = new BigItemStack(is, is.getTagCompound() != null ? is.getTagCompound().getInteger("BigCount") : is.getCount());
+
+		return bigItemStack;
 	}
 
 	@Override

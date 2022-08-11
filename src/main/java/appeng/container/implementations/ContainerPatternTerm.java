@@ -178,12 +178,15 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 		}
 	}
 
+	// update to consider BigCount item tag
 	@Override
 	public void putStackInSlot( int slotID, ItemStack stack )
 	{
+		// BigItemStack bigStack = new BigItemStack(stack);
 		super.putStackInSlot( slotID, stack );
 		this.getAndUpdateOutput();
 	}
+
 
 	protected ItemStack getAndUpdateOutput()
 	{
@@ -308,91 +311,97 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 
 	public void multiply(int multiple)
 	{
-		ItemStack[] input = new ItemStack[9];
+		BigItemStack[] input = new BigItemStack[9];
 		boolean canMultiplyInputs = true;
 		boolean canMultiplyOutputs = true;
 
 		for( int x = 0; x < this.craftingSlots.length; x++ )
 		{
-			input[x] = this.craftingSlots[x].getStack();
+			input[x] = this.craftingSlots[x].getBigStack();
 			if( !input[x].isEmpty() && input[x].getCount() * multiple > input[x].getMaxStackSize() )
 			{
 				canMultiplyInputs = false;
 			}
 		}
+
 		for( final OptionalSlotFake outputSlot : this.outputSlots )
 		{
-			final ItemStack out = outputSlot.getStack();
+			final BigItemStack out = outputSlot.getBigStack();
 			if( !out.isEmpty() && out.getCount() * multiple > out.getMaxStackSize() )
 			{
 				canMultiplyOutputs = false;
 			}
 		}
+
 		if( canMultiplyInputs && canMultiplyOutputs )
 		{
 			for( SlotFakeCraftingMatrix craftingSlot : this.craftingSlots )
 			{
-				ItemStack stack = craftingSlot.getStack();
+				BigItemStack stack = craftingSlot.getBigStack();
 				if( !stack.isEmpty() )
-				craftingSlot.getStack().setCount( stack.getCount() * multiple );
+					craftingSlot.getBigStack().setCount( stack.getCount() * multiple );
 			}
 			for( OptionalSlotFake outputSlot : this.outputSlots )
 			{
-				ItemStack stack = outputSlot.getStack();
+				BigItemStack stack = outputSlot.getBigStack();
 				if( !stack.isEmpty() )
-				outputSlot.getStack().setCount( stack.getCount() * multiple );
+					outputSlot.getBigStack().setCount( stack.getCount() * multiple );
 			}
 		}
 	}
 
 	public void divide(int divide)
 	{
-		ItemStack[] input = new ItemStack[9];
+		// ItemStack[] input = new ItemStack[9];
+		BigItemStack[] input = new BigItemStack[9];
 		boolean canDivideInputs = true;
 		boolean canDivideOutputs = true;
 
 		for( int x = 0; x < this.craftingSlots.length; x++ )
 		{
-			input[x] = this.craftingSlots[x].getStack();
+			input[x] = this.craftingSlots[x].getBigStack();
 			if( !input[x].isEmpty() && input[x].getCount() % divide != 0 )
 			{
 				canDivideInputs = false;
 			}
 		}
+
 		for( final OptionalSlotFake outputSlot : this.outputSlots )
 		{
-			final ItemStack out = outputSlot.getStack();
+			final BigItemStack out = outputSlot.getBigStack();
 			if( !out.isEmpty() && out.getCount() % divide != 0 )
 			{
 				canDivideOutputs = false;
 			}
 		}
+
 		if( canDivideInputs && canDivideOutputs )
 		{
 			for( SlotFakeCraftingMatrix craftingSlot : this.craftingSlots )
 			{
-				ItemStack stack = craftingSlot.getStack();
+				BigItemStack stack = craftingSlot.getBigStack();
 				if( !stack.isEmpty() )
-				craftingSlot.getStack().setCount( stack.getCount() / divide );
+					craftingSlot.getBigStack().setCount( stack.getCount() / divide );
 			}
 			for( OptionalSlotFake outputSlot : this.outputSlots )
 			{
-				ItemStack stack = outputSlot.getStack();
+				BigItemStack stack = outputSlot.getBigStack();
 				if( !stack.isEmpty() )
-				outputSlot.getStack().setCount( stack.getCount() / divide );
+					outputSlot.getBigStack().setCount( stack.getCount() / divide );
 			}
 		}
 	}
 
 	public void increase(int increase)
 	{
-		ItemStack[] input = new ItemStack[9];
+		// ItemStack[] input = new ItemStack[9];
+		BigItemStack[] input = new BigItemStack[9];
 		boolean canIncreaseInputs = true;
 		boolean canIncreaseOutputs = true;
 
 		for( int x = 0; x < this.craftingSlots.length; x++ )
 		{
-			input[x] = this.craftingSlots[x].getStack();
+			input[x] = this.craftingSlots[x].getBigStack();
 			if( !input[x].isEmpty() && input[x].getCount() + increase > input[x].getMaxStackSize() )
 			{
 				canIncreaseInputs = false;
@@ -400,7 +409,7 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 		}
 		for( final OptionalSlotFake outputSlot : this.outputSlots )
 		{
-			final ItemStack out = outputSlot.getStack();
+			final BigItemStack out = outputSlot.getBigStack();
 			if( !out.isEmpty() && out.getCount() + increase > out.getMaxStackSize() )
 			{
 				canIncreaseOutputs = false;
@@ -410,28 +419,29 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 		{
 			for( SlotFakeCraftingMatrix craftingSlot : this.craftingSlots )
 			{
-				ItemStack stack = craftingSlot.getStack();
+				BigItemStack stack = craftingSlot.getBigStack();
 				if( !stack.isEmpty() )
-				craftingSlot.getStack().setCount( stack.getCount() + increase );
+					craftingSlot.getBigStack().setCount( stack.getCount() + increase );
 			}
 			for( OptionalSlotFake outputSlot : this.outputSlots )
 			{
-				ItemStack stack = outputSlot.getStack();
+				BigItemStack stack = outputSlot.getBigStack();
 				if( !stack.isEmpty() )
-				outputSlot.getStack().setCount( stack.getCount() + increase );
+					outputSlot.getBigStack().setCount( stack.getCount() + increase );
 			}
 		}
 	}
 
 	public void decrease(int decrease)
 	{
-		ItemStack[] input = new ItemStack[9];
+		// ItemStack[] input = new ItemStack[9];
+		BigItemStack[] input = new BigItemStack[9];
 		boolean canDecreaseInputs = true;
 		boolean canDecreaseOutputs = true;
 
 		for( int x = 0; x < this.craftingSlots.length; x++ )
 		{
-			input[x] = this.craftingSlots[x].getStack();
+			input[x] = this.craftingSlots[x].getBigStack();
 			if( !input[x].isEmpty() && input[x].getCount() - decrease < 1 )
 			{
 				canDecreaseInputs = false;
@@ -439,7 +449,7 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 		}
 		for( final OptionalSlotFake outputSlot : this.outputSlots )
 		{
-			final ItemStack out = outputSlot.getStack();
+			final BigItemStack out = outputSlot.getBigStack();
 			if( !out.isEmpty() && out.getCount() - decrease < 1 )
 			{
 				canDecreaseOutputs = false;
@@ -449,15 +459,15 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 		{
 			for( SlotFakeCraftingMatrix craftingSlot : this.craftingSlots )
 			{
-				ItemStack stack = craftingSlot.getStack();
+				BigItemStack stack = craftingSlot.getBigStack();
 				if( !stack.isEmpty() )
-				craftingSlot.getStack().setCount( stack.getCount() - decrease );
+					craftingSlot.getBigStack().setCount( stack.getCount() - decrease );
 			}
 			for( OptionalSlotFake outputSlot : this.outputSlots )
 			{
-				ItemStack stack = outputSlot.getStack();
+				BigItemStack stack = outputSlot.getBigStack();
 				if( !stack.isEmpty() )
-				outputSlot.getStack().setCount( stack.getCount() - decrease );
+					outputSlot.getBigStack().setCount( stack.getCount() - decrease );
 			}
 		}
 	}
@@ -518,8 +528,9 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 
 		for( int x = 0; x < this.craftingSlots.length; x++ )
 		{
-			input[x] = new BigItemStack(this.craftingSlots[x].getStack());
-			AELog.info("Got " + this.craftingSlots[x].getStack() + " as an ItemStack Input");
+			// input[x] = new BigItemStack(this.craftingSlots[x].getStack());
+			input[x] = this.craftingSlots[x].getBigStack();
+			AELog.info("Got " + input[x].getItemStack() + " as an ItemStack Input");
 
 			if( !input[x].isEmpty() )
 			{
@@ -547,8 +558,9 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 
 			for( final OptionalSlotFake outputSlot : this.outputSlots )
 			{
-				final BigItemStack out = new BigItemStack(outputSlot.getStack());
-				AELog.info("Got " + outputSlot.getStack() + " as an ItemStack Output");
+				// final BigItemStack out = new BigItemStack(outputSlot.getStack());
+				final BigItemStack out = outputSlot.getBigStack();
+				AELog.info("Got " + out.getItemStack() + " as an ItemStack Output");
 				if( !out.isEmpty() && out.getCount() > 0 )
 				{
 					for (ItemStack stack : out.convertToStacks()) {
@@ -584,6 +596,10 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 
 		if( !i.isEmpty() )
 		{
+			// prune BigCount for encode
+			if (i.getTagCompound() != null) {
+				i.getTagCompound().removeTag("BigCount");
+			}
 			i.writeToNBT( c );
 		}
 
