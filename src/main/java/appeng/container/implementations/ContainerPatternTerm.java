@@ -20,10 +20,13 @@ package appeng.container.implementations;
 
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 import appeng.container.slot.*;
+import appeng.core.AELog;
+import appeng.core.features.BigItemStack;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -32,6 +35,7 @@ import net.minecraft.inventory.InventoryCraftResult;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.inventory.Slot;
 import net.minecraft.inventory.SlotCrafting;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
@@ -65,6 +69,9 @@ import appeng.util.inv.IAEAppEngInventory;
 import appeng.util.inv.InvOperation;
 import appeng.util.inv.WrapperCursorItemHandler;
 import appeng.util.item.AEItemStack;
+import org.apache.logging.log4j.Level;
+
+import javax.annotation.Nonnull;
 
 
 public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEAppEngInventory, IOptionalSlotHost, IContainerCraftingPacket
@@ -507,23 +514,28 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 
 	protected ItemStack[] getInputs()
 	{
+<<<<<<< Updated upstream
 		final ItemStack[] input = new ItemStack[9];
 		boolean hasValue = false;
 
 		for( int x = 0; x < this.craftingSlots.length; x++ )
 		{
 			input[x] = this.craftingSlots[x].getStack();
+=======
+		final BigItemStack[] input = new BigItemStack[9];
+
+		for( int x = 0; x < this.craftingSlots.length; x++ )
+		{
+			input[x] = new BigItemStack(this.craftingSlots[x].getStack());
+			AELog.info("Got " + this.craftingSlots[x].getStack() + " as an ItemStack Input");
+
+>>>>>>> Stashed changes
 			if( !input[x].isEmpty() )
 			{
-				hasValue = true;
+				List<ItemStack> returnable = new ArrayList<>(Arrays.asList(input[x].convertToStacks()));
+				return returnable.toArray(new ItemStack[0]);
 			}
 		}
-
-		if( hasValue )
-		{
-			return input;
-		}
-
 		return null;
 	}
 
@@ -535,29 +547,45 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 
 			if( !out.isEmpty() && out.getCount() > 0 )
 			{
+<<<<<<< Updated upstream
 				return new ItemStack[]{out};
+=======
+				return out.convertToStacks();
+>>>>>>> Stashed changes
 			}
 		}
 		else
 		{
 			final List<ItemStack> list = new ArrayList<>( 3 );
+<<<<<<< Updated upstream
 			boolean hasValue = false;
 
 			for( final OptionalSlotFake outputSlot : this.outputSlots )
 			{
 				final ItemStack out = outputSlot.getStack();
 
+=======
+
+			for( final OptionalSlotFake outputSlot : this.outputSlots )
+			{
+				final BigItemStack out = new BigItemStack(outputSlot.getStack());
+				AELog.info("Got " + outputSlot.getStack() + " as an ItemStack Output");
+>>>>>>> Stashed changes
 				if( !out.isEmpty() && out.getCount() > 0 )
 				{
-					list.add( out );
-					hasValue = true;
-				}
-			}
+					for (ItemStack stack : out.convertToStacks()) {
 
+<<<<<<< Updated upstream
 			if( hasValue )
 			{
 				return list.toArray( new ItemStack[list.size()] );
+=======
+						list.add( stack );
+					}
+				}
+>>>>>>> Stashed changes
 			}
+			return list.toArray(new ItemStack[0]);
 		}
 
 		return null;
