@@ -21,11 +21,15 @@ package appeng.container.slot;
 
 import javax.annotation.Nonnull;
 
+import appeng.core.features.BigItemStack;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagInt;
+import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.IItemHandler;
@@ -115,12 +119,44 @@ public class AppEngSlot extends Slot
 		return this.itemHandler.getStackInSlot( this.index );
 	}
 
+	public BigItemStack getBigStack(){
+		if( !this.isSlotEnabled() )
+		{
+			return BigItemStack.EMPTY;
+		}
+
+		if( this.itemHandler.getSlots() <= this.getSlotIndex() )
+		{
+			return BigItemStack.EMPTY;
+		}
+
+		if( this.isDisplay() )
+		{
+			this.setDisplay( false );
+			// return this.getDisplayStack();
+		}
+		ItemStack is = this.itemHandler.getStackInSlot(this.index);
+		return new BigItemStack(is, is.getTagCompound().getInteger("BigCount"));
+	}
+
 	@Override
 	public void putStack( final ItemStack stack )
 	{
 		if( this.isSlotEnabled() )
 		{
 			ItemHandlerUtil.setStackInSlot( this.itemHandler, this.index, stack );
+
+			if( this.getContainer() != null )
+			{
+				this.getContainer().onSlotChange( this );
+			}
+		}
+	}
+
+	public void putBigStack(final BigItemStack stack){
+		if( this.isSlotEnabled() )
+		{
+			ItemHandlerUtil.setStackInSlot( this.itemHandler, this.index, stack.getItemStack() );
 
 			if( this.getContainer() != null )
 			{
