@@ -514,14 +514,6 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 
 	protected ItemStack[] getInputs()
 	{
-<<<<<<< Updated upstream
-		final ItemStack[] input = new ItemStack[9];
-		boolean hasValue = false;
-
-		for( int x = 0; x < this.craftingSlots.length; x++ )
-		{
-			input[x] = this.craftingSlots[x].getStack();
-=======
 		final BigItemStack[] input = new BigItemStack[9];
 
 		for( int x = 0; x < this.craftingSlots.length; x++ )
@@ -529,7 +521,6 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 			input[x] = new BigItemStack(this.craftingSlots[x].getStack());
 			AELog.info("Got " + this.craftingSlots[x].getStack() + " as an ItemStack Input");
 
->>>>>>> Stashed changes
 			if( !input[x].isEmpty() )
 			{
 				List<ItemStack> returnable = new ArrayList<>(Arrays.asList(input[x].convertToStacks()));
@@ -547,43 +538,24 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 
 			if( !out.isEmpty() && out.getCount() > 0 )
 			{
-<<<<<<< Updated upstream
 				return new ItemStack[]{out};
-=======
-				return out.convertToStacks();
->>>>>>> Stashed changes
 			}
 		}
 		else
 		{
 			final List<ItemStack> list = new ArrayList<>( 3 );
-<<<<<<< Updated upstream
-			boolean hasValue = false;
-
-			for( final OptionalSlotFake outputSlot : this.outputSlots )
-			{
-				final ItemStack out = outputSlot.getStack();
-
-=======
 
 			for( final OptionalSlotFake outputSlot : this.outputSlots )
 			{
 				final BigItemStack out = new BigItemStack(outputSlot.getStack());
 				AELog.info("Got " + outputSlot.getStack() + " as an ItemStack Output");
->>>>>>> Stashed changes
 				if( !out.isEmpty() && out.getCount() > 0 )
 				{
 					for (ItemStack stack : out.convertToStacks()) {
 
-<<<<<<< Updated upstream
-			if( hasValue )
-			{
-				return list.toArray( new ItemStack[list.size()] );
-=======
 						list.add( stack );
 					}
 				}
->>>>>>> Stashed changes
 			}
 			return list.toArray(new ItemStack[0]);
 		}
