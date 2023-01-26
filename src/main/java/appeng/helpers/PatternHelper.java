@@ -50,9 +50,9 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 	private static final int CRAFTING_INPUT_LIMIT = CRAFTING_GRID_DIMENSION * CRAFTING_GRID_DIMENSION;
 	public static final int PROCESSING_INPUT_HEIGHT = 4;
 	public static final int PROCESSING_INPUT_WIDTH = 4;
-	public static final int PROCESSING_INPUT_LIMIT = PROCESSING_INPUT_HEIGHT * PROCESSING_INPUT_WIDTH;
+	public static final int PROCESSING_INPUT_LIMIT = PROCESSING_INPUT_HEIGHT * PROCESSING_INPUT_WIDTH * 32;
 	private static final int CRAFTING_OUTPUT_LIMIT = 1;
-	public static final int PROCESSING_OUTPUT_LIMIT = 6;
+	public static final int PROCESSING_OUTPUT_LIMIT = 6 * 32;
 
 	private final ItemStack patternItem;
 	private final InventoryCrafting crafting;

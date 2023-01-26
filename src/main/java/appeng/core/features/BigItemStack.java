@@ -56,7 +56,7 @@ public class BigItemStack {
 
         for (int i = 0; i < itemStacks.length; i++) {
             if (stackSize > itemStack.getMaxStackSize()){
-                itemStacks[i] = itemStack;
+                itemStacks[i] = itemStack.copy();
                 stackSize -= itemStack.getMaxStackSize();
             } else {
                 itemStack.setCount(stackSize);

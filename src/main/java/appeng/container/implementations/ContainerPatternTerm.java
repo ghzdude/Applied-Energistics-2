@@ -178,11 +178,13 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 		}
 	}
 
-	// update to consider BigCount item tag
+	// update to consider BigCount item tag | slots 5 - 15 (17?) are the crafting slots
 	@Override
 	public void putStackInSlot( int slotID, ItemStack stack )
 	{
-		// BigItemStack bigStack = new BigItemStack(stack);
+        if (!stack.hasTagCompound() && slotID > 5 && slotID < 17)
+            stack = new BigItemStack(stack).getItemStack();
+
 		super.putStackInSlot( slotID, stack );
 		this.getAndUpdateOutput();
 	}
@@ -525,20 +527,24 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 	protected ItemStack[] getInputs()
 	{
 		final BigItemStack[] input = new BigItemStack[9];
+        List<ItemStack> list = new ArrayList<>();
 
-		for( int x = 0; x < this.craftingSlots.length; x++ )
+        for( int x = 0; x < this.craftingSlots.length; x++ )
 		{
 			// input[x] = new BigItemStack(this.craftingSlots[x].getStack());
 			input[x] = this.craftingSlots[x].getBigStack();
-			AELog.info("Got " + input[x].getItemStack() + " as an ItemStack Input");
+			// AELog.info("Got " + input[x].getItemStack() + " as an ItemStack Input");
 
 			if( !input[x].isEmpty() )
 			{
-				List<ItemStack> returnable = new ArrayList<>(Arrays.asList(input[x].convertToStacks()));
-				return returnable.toArray(new ItemStack[0]);
+                for (ItemStack is : input[x].convertToStacks())
+                    list.add( is );
 			}
 		}
-		return null;
+        if (!list.contains(null))
+		    return list.toArray(new ItemStack[0]);
+
+        return null;
 	}
 
 	protected ItemStack[] getOutputs()
@@ -560,7 +566,7 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 			{
 				// final BigItemStack out = new BigItemStack(outputSlot.getStack());
 				final BigItemStack out = outputSlot.getBigStack();
-				AELog.info("Got " + out.getItemStack() + " as an ItemStack Output");
+				// AELog.info("Got " + out.getItemStack() + " as an ItemStack Output");
 				if( !out.isEmpty() && out.getCount() > 0 )
 				{
 					for (ItemStack stack : out.convertToStacks()) {
@@ -596,9 +602,13 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 
 		if( !i.isEmpty() )
 		{
+			ItemStack ir;
+
 			// prune BigCount for encode
 			if (i.getTagCompound() != null) {
-				i.getTagCompound().removeTag("BigCount");
+				ir = new ItemStack(i.getItem(), i.getCount(), i.getMetadata());
+				ir.writeToNBT( c );
+				return c;
 			}
 			i.writeToNBT( c );
 		}
