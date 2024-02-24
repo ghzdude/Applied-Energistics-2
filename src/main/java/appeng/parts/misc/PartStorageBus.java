@@ -222,7 +222,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
     @Override
     public void postChange(final IBaseMonitor<IAEItemStack> monitor, final Iterable<IAEItemStack> change, final IActionSource source) {
         if (this.getProxy().isActive()) {
-            var filteredChanges = this.filterChanges(change);
+            var filteredChanges = this.handler == null ? change : this.filterChanges(change);
 
             AccessRestriction currentAccess = (AccessRestriction) ((ConfigManager) this.getConfigManager()).getSetting(Settings.ACCESS);
             if (readOncePass) {

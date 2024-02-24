@@ -221,7 +221,7 @@ public class PartFluidStorageBus extends PartUpgradeable implements IGridTickabl
     @Override
     public void postChange(final IBaseMonitor<IAEFluidStack> monitor, final Iterable<IAEFluidStack> change, final IActionSource source) {
         if (this.getProxy().isActive()) {
-            var filteredChanges = this.filterChanges(change);
+            var filteredChanges = this.handler == null ? change : this.filterChanges(change);
 
             AccessRestriction currentAccess = (AccessRestriction) ((ConfigManager) this.getConfigManager()).getSetting(Settings.ACCESS);
             if (readOncePass) {
